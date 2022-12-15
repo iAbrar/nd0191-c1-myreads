@@ -2,7 +2,7 @@ import React from "react";
 import SelectShelf from "./SelectShelf";
 
 const Book = ({ book, list, shelf, onUpdateShelf }) => {
-  console.log(shelf)
+
   return (
     <div className="book">
       <div className="book-top">
