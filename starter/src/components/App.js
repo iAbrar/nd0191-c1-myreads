@@ -11,7 +11,7 @@ function App() {
   const [showSearchPage, setShowSearchpage] = useState(false);
   const [books, setBooks] = useState([]);
   const [searchedBooks, setSearchedBooks] = useState([]);
-
+  const [error, setError] = useState(false);
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -20,7 +20,13 @@ function App() {
     const search = async () => {
       try {
         const res = await BooksAPI.search(query);
-        setSearchedBooks(res);
+        if (res.length > 0) {
+          setSearchedBooks(res);
+          setError(false);
+
+        } else {
+          setError(true);
+        }
       } catch (e) {
         console.error(e);
       }
@@ -68,49 +74,53 @@ function App() {
               <form onSubmit={handleSubmit}>
                 <input
                   type="text"
-                  placeholder="Search by title, author, or ISBN"
+                  placeholder="Search by title, author, or ISBN then press enter"
                 />
               </form>
             </div>
           </div>
           <div className="search-books-results">
-            <ol className="books-grid">
-              {searchedBooks.map((book) => (
-                <li key={book.id}>
-                  <Book
-                    book={book}
-                    shelf={
-                      books.find((el) => {
-                        if (el.id === book.id) return el;
-                      })
-                        ? books.find((el) => {
-                            if (el.id === book.id) return el;
-                          }).shelf
-                        : ""
-                    }
-                    onUpdateShelf={addBook}
-                    list={[
-                      {
-                        label: "Add to...",
-                        value: "",
-                      },
-                      {
-                        label: "Currently Reading",
-                        value: "currentlyReading",
-                      },
-                      {
-                        label: "Want to Read",
-                        value: "wantToRead",
-                      },
-                      {
-                        label: "Read",
-                        value: "read",
-                      },
-                    ]}
-                  />
-                </li>
-              ))}
-            </ol>
+            {!error && searchedBooks ? (
+              <ol className="books-grid">
+                {searchedBooks.map((book) => (
+                  <li key={book.id}>
+                    <Book
+                      book={book}
+                      shelf={
+                        books.find((el) => {
+                          if (el.id === book.id) return el;
+                        })
+                          ? books.find((el) => {
+                              if (el.id === book.id) return el;
+                            }).shelf
+                          : ""
+                      }
+                      onUpdateShelf={addBook}
+                      list={[
+                        {
+                          label: "Add to...",
+                          value: "",
+                        },
+                        {
+                          label: "Currently Reading",
+                          value: "currentlyReading",
+                        },
+                        {
+                          label: "Want to Read",
+                          value: "wantToRead",
+                        },
+                        {
+                          label: "Read",
+                          value: "read",
+                        },
+                      ]}
+                    />
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <div>No result found! </div>
+            )}
           </div>
         </div>
       ) : (
@@ -118,11 +128,7 @@ function App() {
           <ListBooks books={books} onUpdateShelf={updateBookShelf} />
 
           <div className="open-search">
-            <a
-              onClick={() => setShowSearchpage(!showSearchPage)}
-            >
-              Add a book
-            </a>
+            <a onClick={() => setShowSearchpage(!showSearchPage)}>Add a book</a>
           </div>
         </>
       )}
