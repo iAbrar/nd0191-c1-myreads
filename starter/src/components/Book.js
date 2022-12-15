@@ -1,5 +1,7 @@
 import React from "react";
 import SelectShelf from "./SelectShelf";
+import PropTypes from "prop-types";
+
 
 const Book = ({ book, list, shelf, onUpdateShelf }) => {
 
@@ -27,5 +29,11 @@ const Book = ({ book, list, shelf, onUpdateShelf }) => {
       <div className="book-authors">{book.authors}</div>
     </div>
   );
+};
+Book.propTypes = {
+  book: PropTypes.object.isRequired,
+  shelf: PropTypes.string.isRequired,
+  list: PropTypes.array.isRequired,
+  onUpdateShelf: PropTypes.func.isRequired,
 };
 export default Book;
