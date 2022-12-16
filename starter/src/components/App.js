@@ -12,20 +12,28 @@ function App() {
   const [books, setBooks] = useState([]);
   const [searchedBooks, setSearchedBooks] = useState([]);
   const [error, setError] = useState(false);
-  const handleSubmit = (event) => {
+
+  const handleSearch = (event) => {
     event.preventDefault();
 
-    const query = event.target[0].value;
+    const query = event.target.value;
+    if (query) {
+      console.log("yes");
+    }
+    console.log(query);
 
     const search = async () => {
       try {
-        const res = await BooksAPI.search(query);
-        if (res.length > 0) {
-          setSearchedBooks(res);
-          setError(false);
-
+        if (query.length > 0) {
+          const res = await BooksAPI.search(query);
+          if (res !== undefined && res.length > 0) {
+            setSearchedBooks(res);
+            setError(false);
+          } else {
+            setError(true);
+          }
         } else {
-          setError(true);
+          setSearchedBooks([]);
         }
       } catch (e) {
         console.error(e);
@@ -71,12 +79,11 @@ function App() {
               Close
             </a>
             <div className="search-books-input-wrapper">
-              <form onSubmit={handleSubmit}>
-                <input
-                  type="text"
-                  placeholder="Search by title, author, or ISBN then press enter"
-                />
-              </form>
+              <input
+                onChange={handleSearch}
+                type="text"
+                placeholder="Search by title, author, or ISBN"
+              />
             </div>
           </div>
           <div className="search-books-results">
